@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CRNA Prep">
+<title>CRNA Board Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+–bg: #080a0e;
+–s1: #0e1117;
+–s2: #141820;
+–s3: #1c2230;
+–border: #1e2535;
+–border2: #2a3348;
+–teal: #3dd9c2;
+–teal2: #25a896;
+–gold: #e8b84b;
+–violet: #8b7cf8;
+–rose: #f06b8a;
+–text: #eef0f6;
+–t2: #7c8499;
+–t3: #3d4459;
+–good: #3dd9c2;
+–ok: #e8b84b;
+–bad: #f06b8a;
+–r: 12px;
+–rl: 18px;
+}
+
+html, body { height: 100%; overflow: hidden; background: var(–bg); }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+color: var(–text);
+display: flex;
+flex-direction: column;
+max-width: 680px;
+margin: 0 auto;
+position: relative;
+}
+
+/* ── NOISE OVERLAY ── */
+body::after {
+content: ‘’;
+position: fixed;
+inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);
+pointer-events: none;
+z-index: 999;
+opacity: 0.4;
+}
+
+/* ── AMBIENT GLOW ── */
+.glow {
+position: fixed;
+inset: 0;
+background:
+radial-gradient(ellipse 70% 40% at 15% 0%, rgba(61,217,194,0.055) 0%, transparent 60%),
+radial-gradient(ellipse 50% 30% at 85% 100%, rgba(139,124,248,0.04) 0%, transparent 60%);
+pointer-events: none;
+z-index: 0;
+}
+
+/* ── LAYOUT ── */
+.app {
+position: relative;
+z-index: 1;
+height: 100vh;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+/* ── TAB BAR ── */
+.tabbar {
+display: flex;
+background: var(–s1);
+border-top: 1px solid var(–border);
+padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+flex-shrink: 0;
+}
+
+.tab {
+flex: 1;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 3px;
+padding: 6px 4px;
+background: none;
+border: none;
+color: var(–t3);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.62rem;
+cursor: pointer;
+transition: color 0.2s;
+letter-spacing: 0.04em;
+text-transform: uppercase;
+}
+
+.tab.active { color: var(–teal); }
+.tab svg { width: 20px; height: 20px; }
+
+/* ── SCREENS ── */
+.screen {
+display: none;
+flex-direction: column;
+flex: 1;
+overflow-y: auto;
+overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+padding: 0 16px 24px;
+}
+.screen.active { display: flex; }
+
+/* ── HEADER ── */
+.topbar {
+padding: 16px 0 12px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+border-bottom: 1px solid var(–border);
+margin-bottom: 22px;
+flex-shrink: 0;
+position: sticky;
+top: 0;
+background: var(–bg);
+z-index: 10;
+}
+
+.wordmark {
+font-family: ‘Lora’, serif;
+font-size: 1rem;
+color: var(–teal);
+letter-spacing: 0.01em;
+}
+
+.wordmark span { color: var(–t3); font-style: italic; font-size: 0.82rem; }
+
+.stat-pill {
+background: var(–s2);
+border: 1px solid var(–border2);
+border-radius: 100px;
+padding: 4px 11px;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.68rem;
+color: var(–t2);
+}
+
+/* ══════════════════════════════════════
+HOME SCREEN
+══════════════════════════════════════ */
+.hero-text {
+font-family: ‘Lora’, serif;
+font-size: 1.9rem;
+line-height: 1.25;
+margin-bottom: 10px;
+}
+.hero-text em { color: var(–teal); font-style: italic; }
+
+.hero-sub {
+color: var(–t2);
+font-size: 0.88rem;
+line-height: 1.65;
+margin-bottom: 26px;
+}
+
+.domain-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 11px;
+margin-bottom: 18px;
+}
+
+.dcard {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: var(–rl);
+padding: 16px 14px 14px;
+cursor: pointer;
+transition: border-color 0.2s, transform 0.15s;
+position: relative;
+overflow: hidden;
+-webkit-tap-highlight-color: transparent;
+}
+.dcard:active { transform: scale(0.98); }
+
+.dcard-top { height: 2px; position: absolute; top: 0; left: 0; right: 0; border-radius: var(–rl) var(–rl) 0 0; }
+.dcard-wt { font-family: ‘JetBrains Mono’, monospace; font-size: 0.58rem; color: var(–t3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+.dcard-name { font-size: 0.88rem; font-weight: 600; line-height: 1.3; margin-bottom: 4px; }
+.dcard-topics { font-size: 0.65rem; color: var(–t2); line-height: 1.5; margin-bottom: 9px; }
+.dcard-bar { height: 2px; background: var(–border); border-radius: 2px; overflow: hidden; }
+.dcard-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+.dcard-score { font-family: ‘JetBrains Mono’, monospace; font-size: 0.58rem; margin-top: 5px; }
+
+.btn-primary {
+width: 100%;
+background: var(–teal);
+color: var(–bg);
+border: none;
+border-radius: var(–r);
+padding: 15px 20px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.95rem;
+font-weight: 600;
+cursor: pointer;
+transition: background 0.2s, transform 0.1s;
+margin-bottom: 9px;
+}
+.btn-primary:active { transform: scale(0.99); background: var(–teal2); }
+
+.btn-ghost {
+width: 100%;
+background: transparent;
+color: var(–t2);
+border: 1px solid var(–border);
+border-radius: var(–r);
+padding: 12px 20px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.87rem;
+cursor: pointer;
+transition: all 0.2s;
+margin-bottom: 9px;
+}
+.btn-ghost:active { border-color: var(–t2); color: var(–text); }
+
+/* ══════════════════════════════════════
+QUIZ SCREEN
+══════════════════════════════════════ */
+.quiz-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 14px 0 10px;
+border-bottom: 1px solid var(–border);
+margin-bottom: 16px;
+flex-shrink: 0;
+position: sticky;
+top: 0;
+background: var(–bg);
+z-index: 10;
+}
+
+.back-btn {
+background: none;
+border: none;
+color: var(–t2);
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.85rem;
+cursor: pointer;
+padding: 4px 0;
+}
+
+.domain-badge {
+border-radius: 100px;
+padding: 4px 12px;
+font-size: 0.68rem;
+font-weight: 600;
+letter-spacing: 0.04em;
+}
+
+.prog-bar { height: 3px; background: var(–border); border-radius: 3px; margin-bottom: 14px; overflow: hidden; flex-shrink: 0; }
+.prog-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+
+.q-meta { font-family: ‘JetBrains Mono’, monospace; font-size: 0.65rem; color: var(–t3); margin-bottom: 12px; }
+
+.q-box {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: var(–rl);
+padding: 20px 18px;
+margin-bottom: 14px;
+min-height: 88px;
+}
+
+.q-text { font-size: 0.97rem; line-height: 1.72; }
+
+.opts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px; }
+
+.opt {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: var(–r);
+padding: 13px 15px;
+text-align: left;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.88rem;
+color: var(–text);
+cursor: pointer;
+transition: all 0.15s;
+display: flex;
+align-items: flex-start;
+gap: 11px;
+line-height: 1.5;
+width: 100%;
+-webkit-tap-highlight-color: transparent;
+}
+.opt:active:not(:disabled) { transform: scale(0.99); }
+.opt:disabled { cursor: default; }
+
+.opt.correct { background: rgba(61,217,194,0.08); border-color: var(–teal); color: #a8f0e8; }
+.opt.wrong { background: rgba(240,107,138,0.08); border-color: var(–rose); color: #f0b8c8; }
+.opt.reveal { background: rgba(61,217,194,0.04); border-color: rgba(61,217,194,0.3); color: rgba(168,240,232,0.5); }
+
+.opt-letter {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.68rem;
+font-weight: 500;
+min-width: 16px;
+padding-top: 2px;
+color: var(–t3);
+}
+.opt.correct .opt-letter { color: var(–teal); }
+.opt.wrong .opt-letter { color: var(–rose); }
+.opt.reveal .opt-letter { color: rgba(61,217,194,0.4); }
+
+.rationale {
+background: var(–s2);
+border: 1px solid var(–border);
+border-left: 3px solid var(–teal);
+border-radius: var(–r);
+padding: 16px 17px;
+margin-bottom: 13px;
+animation: slideUp 0.25s ease;
+}
+.rationale.wrong { border-left-color: var(–rose); }
+
+@keyframes slideUp {
+from { opacity: 0; transform: translateY(6px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.rat-label {
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.6rem;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: var(–teal);
+margin-bottom: 8px;
+}
+.rationale.wrong .rat-label { color: var(–rose); }
+.rat-text { font-size: 0.84rem; line-height: 1.75; color: var(–t2); }
+
+.err-box {
+background: rgba(240,107,138,0.08);
+border: 1px solid rgba(240,107,138,0.3);
+border-radius: var(–r);
+padding: 14px 16px;
+color: #f0b8c8;
+font-size: 0.83rem;
+line-height: 1.6;
+margin-bottom: 12px;
+}
+
+/* loading dots */
+.dots { display: flex; gap: 6px; align-items: center; padding: 8px 0; }
+.dot {
+width: 7px; height: 7px;
+border-radius: 50%;
+background: var(–teal);
+animation: blink 1.2s ease-in-out infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes blink {
+0%,80%,100% { opacity: 0.2; transform: scale(0.8); }
+40% { opacity: 1; transform: scale(1); }
+}
+
+/* ══════════════════════════════════════
+RESULTS SCREEN
+══════════════════════════════════════ */
+.results-hero { text-align: center; padding: 28px 0 20px; }
+.ring-wrap { width: 120px; height: 120px; margin: 0 auto 14px; position: relative; }
+.ring-wrap svg { transform: rotate(-90deg); }
+.ring-score { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ring-pct { font-family: ‘Lora’, serif; font-size: 1.9rem; line-height: 1; }
+.ring-lbl { font-family: ‘JetBrains Mono’, monospace; font-size: 0.55rem; color: var(–t3); text-transform: uppercase; letter-spacing: 0.08em; }
+.res-domain { font-family: ‘Lora’, serif; font-size: 1.25rem; margin-bottom: 7px; }
+.res-verdict { font-size: 0.83rem; color: var(–t2); line-height: 1.65; max-width: 340px; margin: 0 auto 24px; }
+
+.breakdown {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: var(–rl);
+overflow: hidden;
+margin-bottom: 18px;
+}
+.brow {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 13px 17px;
+border-bottom: 1px solid var(–border);
+font-size: 0.83rem;
+}
+.brow:last-child { border-bottom: none; }
+.brow-label { color: var(–t2); }
+.brow-val { font-family: ‘JetBrains Mono’, monospace; font-size: 0.78rem; }
+
+/* ══════════════════════════════════════
+OVERVIEW SCREEN
+══════════════════════════════════════ */
+.ov-title { font-family: ‘Lora’, serif; font-size: 1.5rem; margin-bottom: 6px; }
+.ov-sub { color: var(–t2); font-size: 0.83rem; line-height: 1.6; margin-bottom: 20px; }
+
+.mini-stats {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+margin-bottom: 18px;
+}
+.mini-card {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: var(–r);
+padding: 14px 15px;
+}
+.mini-lbl { font-family: ‘JetBrains Mono’, monospace; font-size: 0.58rem; color: var(–t3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
+.mini-val { font-family: ‘Lora’, serif; font-size: 1.5rem; }
+
+.ov-row {
+background: var(–s1);
+border: 1px solid var(–border);
+border-radius: var(–r);
+padding: 14px 15px;
+display: flex;
+align-items: center;
+gap: 13px;
+margin-bottom: 9px;
+cursor: pointer;
+transition: border-color 0.2s;
+-webkit-tap-highlight-color: transparent;
+}
+.ov-row:active { background: var(–s2); }
+
+.ov-icon {
+width: 44px; height: 44px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘JetBrains Mono’, monospace;
+font-size: 0.65rem;
+font-weight: 600;
+flex-shrink: 0;
+}
+.ov-info { flex: 1; }
+.ov-name { font-size: 0.87rem; font-weight: 500; margin-bottom: 2px; }
+.ov-detail { font-family: ‘JetBrains Mono’, monospace; font-size: 0.62rem; color: var(–t3); }
+.ov-mini-bar { width: 48px; height: 4px; background: var(–border); border-radius: 4px; overflow: hidden; flex-shrink: 0; }
+.ov-mini-fill { height: 100%; border-radius: 4px; }
+
+/* ══════════════════════════════════════
+CHAT SCREEN
+══════════════════════════════════════ */
+.chat-screen {
+display: none;
+flex-direction: column;
+flex: 1;
+overflow: hidden;
+}
+.chat-screen.active { display: flex; }
+
+.chat-topbar {
+padding: 14px 16px 12px;
+border-bottom: 1px solid var(–border);
+flex-shrink: 0;
+}
+.chat-title { font-family: ‘Lora’, serif; font-size: 1rem; color: var(–teal); }
+.chat-sub { font-size: 0.72rem; color: var(–t3); margin-top: 2px; }
+
+.chat-messages {
+flex: 1;
+overflow-y: auto;
+-webkit-overflow-scrolling: touch;
+padding: 16px;
+display: flex;
+flex-direction: column;
+gap: 12px;
+}
+
+.msg {
+max-width: 88%;
+padding: 12px 14px;
+border-radius: 14px;
+font-size: 0.87rem;
+line-height: 1.65;
+animation: msgIn 0.2s ease;
+}
+@keyframes msgIn {
+from { opacity: 0; transform: translateY(4px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user {
+background: var(–teal);
+color: var(–bg);
+align-self: flex-end;
+border-bottom-right-radius: 4px;
+font-weight: 500;
+}
+
+.msg.assistant {
+background: var(–s2);
+border: 1px solid var(–border);
+color: var(–text);
+align-self: flex-start;
+border-bottom-left-radius: 4px;
+}
+
+.msg.thinking {
+background: var(–s2);
+border: 1px solid var(–border);
+align-self: flex-start;
+border-bottom-left-radius: 4px;
+}
+
+.chat-input-wrap {
+padding: 12px 16px max(12px, env(safe-area-inset-bottom));
+border-top: 1px solid var(–border);
+display: flex;
+gap: 9px;
+align-items: flex-end;
+background: var(–bg);
+flex-shrink: 0;
+}
+
+.chat-input {
+flex: 1;
+background: var(–s2);
+border: 1px solid var(–border2);
+border-radius: 20px;
+padding: 10px 16px;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 0.9rem;
+color: var(–text);
+resize: none;
+outline: none;
+max-height: 120px;
+overflow-y: auto;
+line-height: 1.5;
+-webkit-appearance: none;
+}
+.chat-input::placeholder { color: var(–t3); }
+.chat-input:focus { border-color: var(–teal); }
+
+.send-btn {
+width: 40px; height: 40px;
+background: var(–teal);
+border: none;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+flex-shrink: 0;
+transition: background 0.2s, transform 0.1s;
+}
+.send-btn:active { background: var(–teal2); transform: scale(0.95); }
+.send-btn:disabled { background: var(–t3); cursor: default; }
+.send-btn svg { width: 18px; height: 18px; }
+
+.chat-suggestions {
+display: flex;
+flex-wrap: wrap;
+gap: 7px;
+padding: 10px 16px 0;
+flex-shrink: 0;
+}
+.sugg {
+background: var(–s2);
+border: 1px solid var(–border2);
+border-radius: 100px;
+padding: 6px 13px;
+font-size: 0.75rem;
+color: var(–t2);
+cursor: pointer;
+transition: all 0.15s;
+white-space: nowrap;
+-webkit-tap-highlight-color: transparent;
+}
+.sugg:active { border-color: var(–teal); color: var(–teal); }
+
+/* ── UTIL ── */
+.hidden { display: none !important; }
+</style>
+
+</head>
+<body>
+<div class="glow"></div>
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       HOME SCREEN
+  ══════════════════════════════════════ -->
+
+  <div class="screen active" id="homeScreen">
+    <div class="topbar">
+      <div class="wordmark">CRNA <span>Prep</span></div>
+      <div class="stat-pill" id="homePill">—</div>
+    </div>
+
+```
+<div class="hero-text">Know what you<br><em>don't</em> know.</div>
+<p class="hero-sub">Adaptive board diagnostics across all four NCE domains. Fresh questions, deep rationale, tracks your gaps.</p>
+
+<div class="domain-grid" id="domainGrid"></div>
+
+<button class="btn-primary" id="overviewBtn">View Full Overview</button>
+<button class="btn-ghost" id="resetBtn">Reset All Progress</button>
+```
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       QUIZ SCREEN
+  ══════════════════════════════════════ -->
+
+  <div class="screen" id="quizScreen">
+    <div class="quiz-header">
+      <button class="back-btn" id="quizBackBtn">← Home</button>
+      <div class="domain-badge" id="quizBadge"></div>
+    </div>
+
+```
+<div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+<div class="q-meta" id="qMeta">Question 1 of 16</div>
+
+<div class="q-box" id="qBox">
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+
+<div class="opts" id="opts"></div>
+<div class="rationale hidden" id="rationaleBox">
+  <div class="rat-label" id="ratLabel">Rationale</div>
+  <div class="rat-text" id="ratText"></div>
+</div>
+<div class="err-box hidden" id="errBox"></div>
+<button class="btn-primary hidden" id="nextBtn">Next Question →</button>
+```
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       RESULTS SCREEN
+  ══════════════════════════════════════ -->
+
+  <div class="screen" id="resultsScreen">
+    <div class="topbar">
+      <div class="wordmark">Results</div>
+    </div>
+
+```
+<div class="results-hero">
+  <div class="ring-wrap">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <circle cx="60" cy="60" r="50" fill="none" stroke="#1e2535" stroke-width="8"/>
+      <circle id="ringArc" cx="60" cy="60" r="50" fill="none" stroke="#3dd9c2" stroke-width="8"
+        stroke-dasharray="314.16" stroke-dashoffset="314.16" stroke-linecap="round"/>
+    </svg>
+    <div class="ring-score">
+      <div class="ring-pct" id="ringPct">—</div>
+      <div class="ring-lbl">correct</div>
+    </div>
+  </div>
+  <div class="res-domain" id="resDomain"></div>
+  <div class="res-verdict" id="resVerdict"></div>
+</div>
+
+<div class="breakdown" id="breakdown"></div>
+
+<div style="display:flex;flex-direction:column;gap:9px;padding-bottom:32px">
+  <button class="btn-primary" id="retryBtn">Retry This Domain</button>
+  <button class="btn-ghost" id="nextDomainBtn">Next Domain</button>
+  <button class="btn-ghost" id="toOverviewBtn">Full Overview</button>
+</div>
+```
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       OVERVIEW SCREEN
+  ══════════════════════════════════════ -->
+
+  <div class="screen" id="overviewScreen">
+    <div class="topbar">
+      <div class="wordmark">Overview</div>
+      <button class="back-btn" id="ovBackBtn">← Home</button>
+    </div>
+
+```
+<div class="ov-title">Diagnostic Map</div>
+<div class="ov-sub" id="ovSub"></div>
+
+<div class="mini-stats">
+  <div class="mini-card">
+    <div class="mini-lbl">Overall</div>
+    <div class="mini-val" id="ovPct">—</div>
+  </div>
+  <div class="mini-card">
+    <div class="mini-lbl">Questions</div>
+    <div class="mini-val" id="ovTotal">—</div>
+  </div>
+</div>
+
+<div id="ovRows"></div>
+<button class="btn-primary" id="ovStudyBtn" style="margin-top:8px">Continue Studying →</button>
+```
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       CHAT SCREEN
+  ══════════════════════════════════════ -->
+
+  <div class="chat-screen" id="chatScreen">
+    <div class="chat-topbar">
+      <div class="chat-title">Study Assistant</div>
+      <div class="chat-sub">Ask anything · Explain concepts · Dig deeper</div>
+    </div>
+
+```
+<div class="chat-suggestions" id="suggestions">
+  <div class="sugg" onclick="sendSugg(this)">Explain a concept I missed</div>
+  <div class="sugg" onclick="sendSugg(this)">Quiz me on cardiac physiology</div>
+  <div class="sugg" onclick="sendSugg(this)">MAC values for volatile agents</div>
+  <div class="sugg" onclick="sendSugg(this)">OB anesthesia considerations</div>
+  <div class="sugg" onclick="sendSugg(this)">Explain Fick principle</div>
+  <div class="sugg" onclick="sendSugg(this)">Anesthesia machine safety systems</div>
+</div>
+
+<div class="chat-messages" id="chatMessages">
+  <div class="msg assistant">Hey Tyler. I'm your CRNA board study assistant. Ask me to explain any concept, dig into something you missed, quiz you on a topic, or walk through clinical reasoning. What are we working on?</div>
+</div>
+
+<div class="chat-input-wrap">
+  <textarea class="chat-input" id="chatInput" placeholder="Ask anything..." rows="1"></textarea>
+  <button class="send-btn" id="sendBtn" onclick="sendChat()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"></line>
+      <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+    </svg>
+  </button>
+</div>
+```
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       TAB BAR
+  ══════════════════════════════════════ -->
+
+  <nav class="tabbar">
+    <button class="tab active" id="tabHome" onclick="switchTab('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+      </svg>
+      Home
+    </button>
+    <button class="tab" id="tabQuiz" onclick="switchTab('quiz')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+      Quiz
+    </button>
+    <button class="tab" id="tabChat" onclick="switchTab('chat')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      </svg>
+      Ask Claude
+    </button>
+  </nav>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════════════
+const API_KEY = "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";
+const API_URL = "https://api.anthropic.com/v1/messages";
+const MODEL = "claude-sonnet-4-20250514";
+const QS = 16;
+const STORAGE_KEY = "crna_v4";
+
+const DOMAINS = [
+  { id:"bs", name:"Basic Sciences", wt:"25% of NCE", topics:"Anatomy · Physiology · Pharmacology · Pathophysiology · Chemistry · Physics", accent:"#3dd9c2",
+    prompt:"Focus deeply on: physiology mechanisms and equations, pharmacokinetic/dynamic principles, anatomy landmarks for anesthesia, gas laws (Boyle, Charles, Henry, Dalton), acid-base physiology (Henderson-Hasselbalch, compensation), receptor pharmacology, and pathophysiology of cardiovascular, pulmonary, renal, and hepatic disease relevant to perioperative care." },
+  { id:"et", name:"Equipment & Technology", wt:"15% of NCE", topics:"Anesthesia machines · Monitors · Ventilators · Safety · Physics", accent:"#e8b84b",
+    prompt:"Focus on: anesthesia machine components (flow meters, vaporizers, circle system, APL valve), safety systems (pin index, diameter index, oxygen fail-safe), ventilator modes and lung-protective settings, monitoring principles (capnography waveform interpretation, pulse oximetry limitations, arterial line waveforms, PA catheter data), equipment failure recognition and troubleshooting, Doppler, ultrasound physics, defibrillation principles." },
+  { id:"gp", name:"General Principles of Anesthesia", wt:"30% of NCE", topics:"Preop · Airway · Induction · Maintenance · Emergence · Regional", accent:"#8b7cf8",
+    prompt:"Focus on: ASA classification and preoperative optimization, difficult airway algorithm and management, NPO guidelines, pharmacology of induction agents (mechanism, dosing, hemodynamic effects), volatile agent properties (MAC, blood:gas coefficients, metabolism), opioid pharmacology, neuromuscular blockade and reversal, regional anesthesia techniques (spinal, epidural, peripheral nerve blocks) and their complications, PONV prophylaxis, malignant hyperthermia management." },
+  { id:"sp", name:"Surgical & Special Populations", wt:"30% of NCE", topics:"Cardiac · Thoracic · Neuro · OB · Peds · Geriatrics · Trauma", accent:"#f06b8a",
+    prompt:"Focus on: cardiac anesthesia (valvular disease considerations, CPB, TEE), one-lung ventilation physiology and management, neuroanesthesia (ICP management, cerebral autoregulation), obstetric anesthesia (physiologic changes of pregnancy, spinal for cesarean, labor epidural management, emergencies), pediatric pharmacology differences and airway considerations, geriatric pharmacokinetics, trauma and damage control anesthesia, prone positioning complications." }
+];
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+function loadState() {
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) return JSON.parse(r); } catch {}
+  const s = { domains: {} };
+  DOMAINS.forEach(d => { s.domains[d.id] = { tc: 0, ta: 0 }; });
+  return s;
+}
+let state = loadState();
+function saveState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
+
+let session = { domainId: null, idx: 0, correct: 0, answered: 0, asked: [], loading: false, currentQ: null, selected: null };
+let chatHistory = [];
+let chatLoading = false;
+let currentTab = 'home';
+
+// ═══════════════════════════════════════════════
+// SCORE HELPERS
+// ═══════════════════════════════════════════════
+function scoreColor(p) {
+  if (p === null || p === undefined) return "#3d4459";
+  return p >= 75 ? "#3dd9c2" : p >= 55 ? "#e8b84b" : "#f06b8a";
+}
+
+// ═══════════════════════════════════════════════
+// TAB NAVIGATION
+// ═══════════════════════════════════════════════
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+
+  // Show/hide screens
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.chat-screen').forEach(s => s.classList.remove('active'));
+
+  if (tab === 'chat') {
+    document.getElementById('chatScreen').classList.add('active');
+  } else if (tab === 'quiz') {
+    if (session.domainId) {
+      document.getElementById('quizScreen').classList.add('active');
+    } else {
+      document.getElementById('homeScreen').classList.add('active');
+      document.getElementById('tabHome').classList.add('active');
+      document.getElementById('tabQuiz').classList.remove('active');
+      currentTab = 'home';
+    }
+  } else {
+    document.getElementById('homeScreen').classList.add('active');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// RENDER HOME
+// ═══════════════════════════════════════════════
+function renderHome() {
+  const grid = document.getElementById('domainGrid');
+  grid.innerHTML = '';
+  DOMAINS.forEach(d => {
+    const ds = state.domains[d.id];
+    const pct = ds.ta > 0 ? Math.round(ds.tc / ds.ta * 100) : null;
+    const card = document.createElement('div');
+    card.className = 'dcard';
+    card.innerHTML = `
+      <div class="dcard-top" style="background:${d.accent}"></div>
+      <div class="dcard-wt">${d.wt}</div>
+      <div class="dcard-name">${d.name}</div>
+      <div class="dcard-topics">${d.topics}</div>
+      <div class="dcard-bar"><div class="dcard-fill" style="width:${pct??0}%;background:${d.accent}"></div></div>
+      <div class="dcard-score" style="color:${pct!==null?scoreColor(pct):'#3d4459'}">${pct!==null?`${pct}% · ${ds.ta} answered`:'Not started'}</div>
+    `;
+    card.addEventListener('click', () => startDomain(d.id));
+    grid.appendChild(card);
+  });
+
+  const ta = DOMAINS.reduce((a,d)=>a+state.domains[d.id].ta,0);
+  const tc = DOMAINS.reduce((a,d)=>a+state.domains[d.id].tc,0);
+  document.getElementById('homePill').textContent = ta > 0 ? `${tc}/${ta}` : '—';
+}
+
+// ═══════════════════════════════════════════════
+// START DOMAIN
+// ═══════════════════════════════════════════════
+function startDomain(dId) {
+  session = { domainId: dId, idx: 0, correct: 0, answered: 0, asked: [], loading: false, currentQ: null, selected: null };
+  const d = DOMAINS.find(x => x.id === dId);
+  document.getElementById('quizBadge').textContent = d.name;
+  document.getElementById('quizBadge').style.background = d.accent + '22';
+  document.getElementById('quizBadge').style.color = d.accent;
+  document.getElementById('quizBadge').style.border = `1px solid ${d.accent}44`;
+  document.getElementById('progFill').style.background = d.accent;
+  document.getElementById('progFill').style.width = '0%';
+  document.getElementById('opts').innerHTML = '';
+  document.getElementById('rationaleBox').classList.add('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('errBox').classList.add('hidden');
+
+  showQuizScreen();
+  fetchQuestion();
+}
+
+function showQuizScreen() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('quizScreen').classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tabQuiz').classList.add('active');
+  currentTab = 'quiz';
+}
+
+// ═══════════════════════════════════════════════
+// FETCH QUESTION
+// ═══════════════════════════════════════════════
+async function fetchQuestion(attempt = 0) {
+  session.loading = true;
+  session.selected = null;
+  session.currentQ = null;
+
+  document.getElementById('qBox').innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  document.getElementById('opts').innerHTML = '';
+  document.getElementById('rationaleBox').classList.add('hidden');
+  document.getElementById('nextBtn').classList.add('hidden');
+  document.getElementById('errBox').classList.add('hidden');
+  document.getElementById('qMeta').textContent = `Question ${session.idx + 1} of ${QS}`;
+  document.getElementById('progFill').style.width = `${(session.idx / QS) * 100}%`;
+
+  const d = DOMAINS.find(x => x.id === session.domainId);
+  const avoid = session.asked.length > 0 ? `Do NOT repeat these topics: ${session.asked.join(', ')}.` : '';
+
+  const prompt = `You are an expert CRNA board exam question writer for the NCE (National Certification Examination).
+
+Generate ONE high-quality board-style multiple choice question for: "${d.name}"
+${d.prompt}
+
+This is question ${session.idx + 1} of ${QS}. ${avoid}
+
+Requirements:
+- Clinically realistic, representative of actual NCE difficulty and style
+- Tests mechanisms, physiologic values, or clinical reasoning — NOT pure name recall
+- 4 answer choices (A B C D), exactly one correct
+- Rationale explains WHY correct is right AND why each distractor is wrong
+- Include specific values, thresholds, and mechanisms
+- Vary difficulty: mix foundational and advanced
+
+CRITICAL INSTRUCTION: Respond with ONLY a raw JSON object. No markdown. No code fences. No explanation. Start your response with { and end with }.
+
+Required format:
+{"topic":"short topic tag","question":"Full question text here","choices":{"A":"choice A text","B":"choice B text","C":"choice C text","D":"choice D text"},"correct":"A","rationale":"Full mechanistic explanation of correct answer and why each distractor is wrong. Include values and clinical pearls."}`;
+
+  try {
+    let res;
+    try {
+      res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: MODEL, max_tokens: 1200, messages: [{ role: 'user', content: prompt }] })
+      });
+    } catch (netErr) {
+      throw new Error('Network blocked: ' + netErr.message);
+    }
+
+    let data;
+    try { data = await res.json(); } catch(e) { throw new Error('Unreadable response, status ' + res.status); }
+
+    if (!res.ok) throw new Error('API ' + res.status + ': ' + (data?.error?.message || JSON.stringify(data).slice(0,120)));
+
+    if (!data.content || !Array.isArray(data.content)) throw new Error('Bad shape: ' + JSON.stringify(data).slice(0,200));
+
+    let raw = data.content.map(b => b.text || '').join('').trim();
+    const s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+    if (s === -1 || e === -1) throw new Error('No JSON in response: ' + raw.slice(0,200));
+    raw = raw.slice(s, e + 1);
+
+    let q;
+    try { q = JSON.parse(raw); } catch(je) {
+      if (attempt < 2) return fetchQuestion(attempt + 1);
+      throw new Error('JSON parse fail: ' + je.message + ' | raw: ' + raw.slice(0,120));
+    }
+
+    if (!q.question || !q.choices || !q.correct || !q.rationale) {
+      if (attempt < 2) return fetchQuestion(attempt + 1);
+      throw new Error('Missing fields, got keys: ' + Object.keys(q).join(', '));
+    }
+
+    session.currentQ = q;
+    session.asked.push(q.topic || '');
+    session.loading = false;
+    renderQuestion(q);
+
+  } catch (err) {
+    session.loading = false;
+    document.getElementById('qBox').innerHTML = '<div style="color:var(--t2);font-size:0.85rem">Failed to load question.</div>';
+    const eb = document.getElementById('errBox');
+    eb.textContent = err.message || 'Unknown error.';
+    eb.classList.remove('hidden');
+    const nb = document.getElementById('nextBtn');
+    nb.textContent = 'Retry →';
+    nb.classList.remove('hidden');
+    nb.onclick = () => fetchQuestion(0);
+  }
+}
+
+// ═══════════════════════════════════════════════
+// RENDER QUESTION
+// ═══════════════════════════════════════════════
+function renderQuestion(q) {
+  document.getElementById('qBox').innerHTML = `<div class="q-text">${q.question}</div>`;
+  const opts = document.getElementById('opts');
+  opts.innerHTML = '';
+  ['A','B','C','D'].forEach(letter => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.innerHTML = `<span class="opt-letter">${letter}</span><span>${q.choices[letter]}</span>`;
+    btn.addEventListener('click', () => handleAnswer(letter));
+    opts.appendChild(btn);
+  });
+}
+
+// ═══════════════════════════════════════════════
+// HANDLE ANSWER
+// ═══════════════════════════════════════════════
+function handleAnswer(letter) {
+  if (session.selected || !session.currentQ) return;
+  session.selected = letter;
+  const q = session.currentQ;
+  const correct = letter === q.correct;
+
+  session.answered++;
+  if (correct) session.correct++;
+  state.domains[session.domainId].ta++;
+  if (correct) state.domains[session.domainId].tc++;
+  saveState();
+
+  // Style buttons
+  document.querySelectorAll('.opt').forEach((btn, i) => {
+    const l = ['A','B','C','D'][i];
+    btn.disabled = true;
+    if (l === letter && correct) btn.classList.add('correct');
+    else if (l === letter && !correct) btn.classList.add('wrong');
+    else if (l === q.correct && !correct) btn.classList.add('reveal');
+  });
+
+  // Show rationale
+  const rb = document.getElementById('rationaleBox');
+  rb.className = 'rationale' + (correct ? '' : ' wrong');
+  document.getElementById('ratLabel').textContent = correct ? '✓ Correct — Key Concept' : '✗ Incorrect — Key Concept';
+  document.getElementById('ratText').textContent = q.rationale;
+  rb.classList.remove('hidden');
+
+  // Next btn
+  const nb = document.getElementById('nextBtn');
+  nb.textContent = session.idx >= QS - 1 ? 'See Results →' : 'Next Question →';
+  nb.classList.remove('hidden');
+  nb.onclick = session.idx >= QS - 1 ? showResults : advanceQ;
+}
+
+function advanceQ() {
+  session.idx++;
+  fetchQuestion(0);
+}
+
+// ═══════════════════════════════════════════════
+// RESULTS
+// ═══════════════════════════════════════════════
+function showResults() {
+  const pct = session.answered > 0 ? Math.round(session.correct / session.answered * 100) : 0;
+  const d = DOMAINS.find(x => x.id === session.domainId);
+  const ds = state.domains[session.domainId];
+  const atPct = ds.ta > 0 ? Math.round(ds.tc / ds.ta * 100) : null;
+  const col = scoreColor(pct);
+  const circ = 314.16;
+  const offset = circ - (pct / 100) * circ;
+
+  document.getElementById('ringPct').textContent = `${pct}%`;
+  document.getElementById('ringPct').style.color = col;
+  const arc = document.getElementById('ringArc');
+  arc.style.stroke = col;
+  setTimeout(() => {
+    arc.style.transition = 'stroke-dashoffset 1s ease';
+    arc.style.strokeDashoffset = offset;
+  }, 100);
+
+  document.getElementById('resDomain').textContent = d.name;
+  document.getElementById('resVerdict').textContent =
+    pct >= 80 ? `Strong. Your understanding of ${d.name} is solid. Focus on edge cases and high-yield pearls.`
+    : pct >= 65 ? `Moderate. Working knowledge exists but mechanistic gaps remain. Targeted review recommended.`
+    : pct >= 50 ? `Below target. Significant gaps in ${d.name}. Prioritize mechanisms over memorization.`
+    : `This domain needs focused work. Identifying the gap is the first step — systematic review will pay off.`;
+
+  document.getElementById('breakdown').innerHTML = `
+    <div class="brow"><span class="brow-label">This session</span><span class="brow-val" style="color:${col}">${session.correct}/${session.answered} (${pct}%)</span></div>
+    <div class="brow"><span class="brow-label">All-time this domain</span><span class="brow-val" style="color:${scoreColor(atPct)}">${atPct!==null?`${ds.tc}/${ds.ta} (${atPct}%)`:'—'}</span></div>
+    <div class="brow"><span class="brow-label">NCE weight</span><span class="brow-val" style="color:var(--t2)">${d.wt}</span></div>
+  `;
+
+  document.getElementById('retryBtn').onclick = () => startDomain(session.domainId);
+
+  const idx = DOMAINS.findIndex(x => x.id === session.domainId);
+  const next = DOMAINS[idx + 1];
+  const ndb = document.getElementById('nextDomainBtn');
+  if (next) { ndb.textContent = `Next: ${next.name} →`; ndb.onclick = () => startDomain(next.id); ndb.classList.remove('hidden'); }
+  else { ndb.classList.add('hidden'); }
+
+  document.getElementById('toOverviewBtn').onclick = showOverview;
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('resultsScreen').classList.add('active');
+  renderHome();
+}
+
+// ═══════════════════════════════════════════════
+// OVERVIEW
+// ═══════════════════════════════════════════════
+function showOverview() {
+  const ta = DOMAINS.reduce((a,d)=>a+state.domains[d.id].ta,0);
+  const tc = DOMAINS.reduce((a,d)=>a+state.domains[d.id].tc,0);
+  const op = ta > 0 ? Math.round(tc/ta*100) : null;
+
+  document.getElementById('ovPct').textContent = op !== null ? `${op}%` : '—';
+  document.getElementById('ovPct').style.color = scoreColor(op);
+  document.getElementById('ovTotal').textContent = ta || '—';
+  document.getElementById('ovSub').textContent = ta === 0
+    ? 'No domains attempted yet. Start with Basic Sciences.'
+    : `${DOMAINS.filter(d=>state.domains[d.id].ta>0).length} of 4 domains attempted · ${ta} questions total`;
+
+  const rows = document.getElementById('ovRows');
+  rows.innerHTML = '';
+  DOMAINS.forEach(d => {
+    const ds = state.domains[d.id];
+    const pct = ds.ta > 0 ? Math.round(ds.tc/ds.ta*100) : null;
+    const col = scoreColor(pct);
+    const row = document.createElement('div');
+    row.className = 'ov-row';
+    row.innerHTML = `
+      <div class="ov-icon" style="background:${pct!==null?col+'22':'#1c2230'};color:${pct!==null?col:'#3d4459'};border:1px solid ${pct!==null?col+'44':'#1e2535'}">${pct!==null?pct+'%':'—'}</div>
+      <div class="ov-info">
+        <div class="ov-name">${d.name}</div>
+        <div class="ov-detail">${pct!==null?`${ds.tc}/${ds.ta} correct · ${d.wt}`:`Not attempted · ${d.wt}`}</div>
+      </div>
+      ${pct!==null?`<div class="ov-mini-bar"><div class="ov-mini-fill" style="width:${pct}%;background:${col}"></div></div>`:''}
+    `;
+    row.addEventListener('click', () => startDomain(d.id));
+    rows.appendChild(row);
+  });
+
+  const weakest = DOMAINS.filter(d=>state.domains[d.id].ta>0).sort((a,b)=>(state.domains[a.id].tc/state.domains[a.id].ta)-(state.domains[b.id].tc/state.domains[b.id].ta))[0];
+  const osb = document.getElementById('ovStudyBtn');
+  if (weakest) { osb.textContent = `Study Weakest: ${weakest.name} →`; osb.onclick = () => startDomain(weakest.id); }
+  else { osb.textContent = 'Start Basic Sciences →'; osb.onclick = () => startDomain('bs'); }
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('overviewScreen').classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+// CHAT
+// ═══════════════════════════════════════════════
+function sendSugg(el) {
+  document.getElementById('chatInput').value = el.textContent;
+  sendChat();
+}
+
+async function sendChat() {
+  if (chatLoading) return;
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('suggestions').classList.add('hidden');
+
+  // Add user message
+  addMsg('user', text);
+  chatHistory.push({ role: 'user', content: text });
+
+  // Thinking indicator
+  const thinkId = 'think_' + Date.now();
+  const thinkEl = document.createElement('div');
+  thinkEl.className = 'msg thinking';
+  thinkEl.id = thinkId;
+  thinkEl.innerHTML = '<div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  document.getElementById('chatMessages').appendChild(thinkEl);
+  scrollChat();
+
+  chatLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 1024,
+        system: `You are an expert CRNA board exam study assistant helping Tyler, a DNP student and nurse anesthetist preparing for the NCE (CRNA boards) in June/July 2027. 
+
+You have deep expertise in:
+- Anesthesia pharmacology, physiology, and pathophysiology
+- Equipment and technology
+- Regional and general anesthesia principles
+- Specialty anesthesia (cardiac, OB, neuro, peds, thoracic)
+
+Tyler's identified weak areas: basic sciences depth, specific values and thresholds, scientific/physiologic reasoning. His strongest areas are equipment and clinical application.
+
+Be concise but deep. Use specific values. Explain mechanisms. When quizzing, give immediate feedback. If he asks you to quiz him on a topic, generate 3-5 rapid-fire questions. Be direct — he is a clinician. No need for excessive caveats.`,
+        messages: chatHistory
+      })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error?.message || 'API error');
+
+    const reply = data.content.map(b => b.text || '').join('').trim();
+    chatHistory.push({ role: 'assistant', content: reply });
+
+    document.getElementById(thinkId)?.remove();
+    addMsg('assistant', reply);
+
+  } catch (err) {
+    document.getElementById(thinkId)?.remove();
+    addMsg('assistant', `Error: ${err.message}. Please try again.`);
+  } finally {
+    chatLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+  }
+}
+
+function addMsg(role, text) {
+  const el = document.createElement('div');
+  el.className = `msg ${role}`;
+  el.textContent = text;
+  document.getElementById('chatMessages').appendChild(el);
+  scrollChat();
+}
+
+function scrollChat() {
+  const c = document.getElementById('chatMessages');
+  setTimeout(() => { c.scrollTop = c.scrollHeight; }, 50);
+}
+
+// Auto-resize textarea
+document.getElementById('chatInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+});
+
+document.getElementById('chatInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); }
+});
+
+// ═══════════════════════════════════════════════
+// WIRING
+// ═══════════════════════════════════════════════
+document.getElementById('quizBackBtn').addEventListener('click', () => {
+  session.domainId = null;
+  switchTab('home');
+  renderHome();
+});
+
+document.getElementById('overviewBtn').addEventListener('click', showOverview);
+document.getElementById('ovBackBtn').addEventListener('click', () => {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('homeScreen').classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tabHome').classList.add('active');
+  currentTab = 'home';
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('Reset all progress? This cannot be undone.')) {
+    const s = { domains: {} };
+    DOMAINS.forEach(d => { s.domains[d.id] = { tc: 0, ta: 0 }; });
+    state = s;
+    saveState();
+    renderHome();
+  }
+});
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+renderHome();
+</script>
+
+</body>
+</html>
